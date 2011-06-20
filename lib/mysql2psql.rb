@@ -23,7 +23,7 @@ class Mysql2psql
     @reader = MysqlReader.new( options )
 
     if options.destfile(nil)
-      @writer = PostgresFileWriter.new(options.destfile)
+      @writer = PostgresFileWriter.new(options)
     else
       @writer = PostgresDbWriter.new(options)
     end

@@ -1,10 +1,23 @@
 require 'pg'
-
+require 'iconv' #asdf
 require 'mysql2psql/writer'
 
 class Mysql2psql
 
   class PostgresWriter < Writer
+    def initialize(options) #asdf
+#       if ENV['FROM'] && ENV['TO']
+# puts "Setting from and to"
+#         @iconv = Iconv.new(ENV['TO'], ENV['FROM'])
+#       end
+      if not options.iconv_from.empty? and not options.iconv_to.empty?
+        puts "using iconv! (options.iconv_from = #{options.iconv_from}, options.iconv_to = #{options.iconv_to})"
+        @iconv = Iconv.new(options.iconv_to, options.iconv_from)
+      else
+        puts "not using iconv"
+      end
+    end
+    
     def column_description(column)
       "#{PGconn.quote_ident(column[:name])} #{column_type_info(column)}"
     end
@@ -125,7 +138,10 @@ class Mysql2psql
             if column_type(column) == "bytea"
               row[index] = PGconn.escape_bytea(row[index])
             else
+              #row[index] = Iconv.iconv('utf8','latin1',row[index].gsub(/\\/, '\\\\\\').gsub(/\n/,'\n').gsub(/\t/,'\t').gsub(/\r/,'\r').gsub(/\0/, ''))
+              #row[index] = Iconv.iconv('utf8','MACINTOSH',row[index].gsub(/\\/, '\\\\\\').gsub(/\n/,'\n').gsub(/\t/,'\t').gsub(/\r/,'\r').gsub(/\0/, ''))
               row[index] = row[index].gsub(/\\/, '\\\\\\').gsub(/\n/,'\n').gsub(/\t/,'\t').gsub(/\r/,'\r').gsub(/\0/, '')
+              row[index] = @iconv.iconv(row[index]) if @iconv
             end
           end
         

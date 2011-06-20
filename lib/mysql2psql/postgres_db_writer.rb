@@ -8,17 +8,19 @@ class PostgresDbWriter < PostgresWriter
   attr_reader :conn, :hostname, :login, :password, :database, :schema, :port
   
   def initialize(options)
+    super(options)
     @hostname, @login, @password, @database, @port =  
       options.pghostname('localhost'), options.pgusername, 
       options.pgpassword, options.pgdatabase, options.pgport(5432).to_s
     @database, @schema = database.split(":")
+    @set_client_encoding = options.set_client_encoding
     open
   end
 
   def open
     @conn = PGconn.new(hostname, port, '', '', database, login, password)
     @conn.exec("SET search_path TO #{PGconn.quote_ident(schema)}") if schema
-    @conn.exec("SET client_encoding = 'UTF8'")
+    @conn.exec("SET client_encoding = '#{@set_client_encoding || "UTF8"}'")
     @conn.exec("SET standard_conforming_strings = off") if @conn.server_version >= 80200
     @conn.exec("SET check_function_bodies = false")
     @conn.exec("SET client_min_messages = warning")    
