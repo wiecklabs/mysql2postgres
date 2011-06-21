@@ -14,7 +14,6 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
  
 EOF
-    puts "options.set_client_encoding = #{options.set_client_encoding}"
   end
   
   def truncate(table)

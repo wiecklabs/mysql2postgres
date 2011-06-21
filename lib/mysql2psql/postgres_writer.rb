@@ -1,20 +1,13 @@
 require 'pg'
-require 'iconv' #asdf
+require 'iconv'
 require 'mysql2psql/writer'
 
 class Mysql2psql
 
   class PostgresWriter < Writer
-    def initialize(options) #asdf
-#       if ENV['FROM'] && ENV['TO']
-# puts "Setting from and to"
-#         @iconv = Iconv.new(ENV['TO'], ENV['FROM'])
-#       end
+    def initialize(options)
       if not options.iconv_from.empty? and not options.iconv_to.empty?
-        puts "using iconv! (options.iconv_from = #{options.iconv_from}, options.iconv_to = #{options.iconv_to})"
         @iconv = Iconv.new(options.iconv_to, options.iconv_from)
-      else
-        puts "not using iconv"
       end
     end
     
