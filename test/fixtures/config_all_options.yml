@@ -36,3 +36,13 @@ supress_ddl: false
 
 # if force_truncate is true, forces a table truncate before table loading
 force_truncate: false
+
+# encoding to use for reading from mysql, will default to LATIN1 if the line isn't filled in.
+set_names: LATIN1
+
+# encoding to use for writing to postgres, will default to UTF8 if the line isn't filled in.
+set_client_coding: UTF8
+
+# convert text values from one encoding to another (must be the system values for encoding names). iconv won't run if any line is missing.
+iconv_from: LATIN1
+iconv_to: UTF8
