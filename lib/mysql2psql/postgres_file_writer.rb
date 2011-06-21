@@ -3,11 +3,12 @@ require 'mysql2psql/postgres_writer'
 class Mysql2psql
 
 class PostgresFileWriter < PostgresWriter
-  def initialize(file)
-    @f = File.open(file, "w+")
+  def initialize(options)
+    super(options)
+    @f = File.open(options.destfile, "w+")
     @f << <<-EOF
 -- MySQL 2 PostgreSQL dump\n
-SET client_encoding = 'UTF8';
+SET client_encoding = '#{options.set_client_encoding || "UTF8"}';
 SET standard_conforming_strings = off;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
